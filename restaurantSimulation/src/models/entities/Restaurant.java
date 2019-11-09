@@ -11,14 +11,16 @@ public class Restaurant extends MyThread{
 	private int timeOfSimulation;
 	private int currentTime;
 	private SimulationManager simulationManager;
+	private Kitchen kitchen;
 
-	public Restaurant(int sleep, int timeOfSimulation) {
+	public Restaurant(int sleep, int timeOfSimulation, Kitchen kitchen) {
 		super(sleep);
 		this.atentionQueue = new Queue<>();
-		this.timeOfSimulation = timeOfSimulation;
+		this.timeOfSimulation = timeOfSimulation*1000;
 		simulationManager = new SimulationManager();
-		start();
+		this.kitchen = kitchen;
 	}
+
 	public Queue<Atention> getAtentionQueue() {
 		return atentionQueue;
 	}
@@ -37,17 +39,33 @@ public class Restaurant extends MyThread{
 	@Override
 	public void executeTask() {
 		currentTime ++;
+		System.out.println(currentTime + "tiempo actual  ------------  " + timeOfSimulation + " tiempo de simulacion");
 		if (currentTime == timeOfSimulation) {
 			this.stop();
 		}
-		addAtention(simulationManager.generateAtention());
+		try {
+			if(simulationManager.generateAtention(kitchen) != null) {
+				addAtention(simulationManager.generateAtention(kitchen));
+			}else {
+				System.out.println("Cliente en espera...");
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		dequeueAtentions();		
 	}
 
 	private void dequeueAtentions() {
-		while (!this.atentionQueue.isEmpty() && SimulationManager.getWaiterSimulation()) {
-			atentionQueue.dequeue().getInformation().start();
+		if (this.atentionQueue.getHead()
+				!= null && SimulationManager.getWaiterSimulation()) {
+			
+			while (this.atentionQueue.getHead() != null) {
+				Atention atention = atentionQueue.dequeue().getInformation();
+				atention.start();
+			}
 		}
+
 	}
 }

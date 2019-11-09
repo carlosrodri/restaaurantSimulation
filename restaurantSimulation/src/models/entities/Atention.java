@@ -10,15 +10,16 @@ public class Atention extends MyThread{
 	private Table table;
 	private double time;
 	
-	public Atention(int sleep, Waiter waiter, ArrayList<Client> clientList, ArrayList<Order> orderList, Table table) {
+	public Atention(int sleep, Waiter waiter, ArrayList<Client> clientList, ArrayList<Order> orderList, Table table, Kitchen kitchen) {
 		super(sleep);
 		this.waiter = waiter;
-		this.waiter.start();
+		this.waiter.addOrder(kitchen, orderList, clientList);
 		this.clientList = clientList;
 		this.orderList = orderList;
 		this.table = table;
 		this.time = 0;
 	}
+	
 	public Waiter getWaiterList() {
 		return waiter;
 	}
@@ -46,6 +47,6 @@ public class Atention extends MyThread{
 	@Override
 	public void executeTask() {
 		time ++;
+		waiter.executeTask();
 	}
-	
 }

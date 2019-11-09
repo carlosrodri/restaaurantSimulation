@@ -16,22 +16,24 @@ public class Kitchen extends MyThread{
 		this.cheflist = cheflist;
 		this.orderQueue = new Queue<>();
 		this.timeOfSimulation = 0;
+		start();
 	}
 
 	@Override
 	public void executeTask() {
 		try {
 			atent();
-		} catch (InterruptedException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	/**
 	 * monitorea el tiempo de simulacion, tambien verifica si hay ordenes para atenderlas 
-	 * @throws InterruptedException 
+	 * @throws Exception 
 	 */
-	private void atent() throws InterruptedException {
+	private void atent() throws Exception {
+		timeOfSimulation ++;
 		if (timeOfSimulation == 8000) {
 			stopAll();
 		}
@@ -43,7 +45,6 @@ public class Kitchen extends MyThread{
 					chef.setTimeOfPreparation(dish.getTimeOfOfConsumption());
 				}else {
 					System.out.println("el chef está ocupado");
-					wait();
 				}
 			}
 			orderInWay.setStateOfOrder(StateOfOrder.FINISHED);
@@ -54,9 +55,6 @@ public class Kitchen extends MyThread{
 	 * detiene el trabajo de la comcina como el de los chefs cuando se cumple con las horas de trabajo
 	 */
 	private void stopAll() {
-		for (Chef chef : cheflist) {
-			chef.stop();
-		}
 		this.stop();
 	}
 
@@ -68,22 +66,24 @@ public class Kitchen extends MyThread{
 		orderQueue.enqueue(new NodeList<Order>(order));
 	}
 
-
 	/**
 	 * verifica si hay un chef disponible 
 	 * @return un chef en caso de que este esté disponible
+	 * @throws Exception 
 	 */
-	public Chef chefDsiponibility(Dish dish) {
-		for (Chef chef : cheflist) {
-			if (chef.getState().equals(State.FREE) || dish.getHability().equals(chef.getHabilities().get(0))) {
-				return chef;
-			}else if (chef.getState().equals(State.FREE) || dish.getHability().equals(chef.getHabilities().get(1))) {
-				return chef;
+	public Chef chefDsiponibility(Dish dish) throws Exception {
+		if (cheflist.size() == 0) {
+
+		}else {
+			if (cheflist.get(0).getState().equals(State.FREE)) {
+				return cheflist.get(0);
+			}else if (cheflist.get(1).getState().equals(State.FREE)) {
+				return cheflist.get(1);
 			}else{
-				return null;
+				throw new Exception("No hay messeros libres, esperando...");
 			}
 		}
-		return null;
+		throw new Exception("No hay messeros libres, esperando...");
 	}
 
 }

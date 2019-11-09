@@ -15,14 +15,17 @@ public class Order {
 		this.timeToOrder = getTimeOfOrder();
 		this.priority = priority;
 		this.stateOfOrder = stateOfOrder;
-		this.dishesList = new ArrayList<>();
+		this.dishesList = dishesList;
 		this.client = client;
 	}
 
 	private double getTimeOfOrder() {
 		double time = 0;
-		for (Dish dish : dishesList) {
-			time += dish.getTimeOfOPreparation();
+		if (dishesList != null) {
+			for (Dish dish : dishesList) {
+				time += dish.getTimeOfOPreparation();
+			}
+			return time;
 		}
 		return time;
 	}

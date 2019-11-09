@@ -2,7 +2,7 @@ package models.entities;
 
 import java.util.ArrayList;
 
-public class Waiter extends MyThread{
+public class Waiter {
 
 	private int id;
 	private State state;
@@ -13,8 +13,7 @@ public class Waiter extends MyThread{
 	private double tip;
 	private ArrayList<Double> calification;
 
-	public Waiter(int sleep, int id, State state, int hoursOfWork, int quantumOfOrder, double tip, int timeOfAtention) {
-		super(sleep);
+	public Waiter( int id, State state, int hoursOfWork, int quantumOfOrder, double tip, int timeOfAtention) {
 		this.id = id;
 		this.state = state;
 		this.hoursOfWork = hoursOfWork*1000;
@@ -61,7 +60,7 @@ public class Waiter extends MyThread{
 		return timeOfAtention;
 	}
 
-	@Override
+	
 	/**
 	 * corre el tiempo de trabajo, valida sus descansos y cuando está libre o no dependiendo de los pedidos que tenga
 	 * en cola
@@ -70,15 +69,21 @@ public class Waiter extends MyThread{
 		hoursOfWork ++;
 		if (timeOfAtention > 0) {
 			timeOfAtention --;
-		}
-		if (hoursOfWork%2000 == 0) {
+		}else if (hoursOfWork % 2000 == 0) {
 			changeState();
 			if (hoursOfWork == 2166 || hoursOfWork == 4166 || hoursOfWork == 6166) {
+				System.out.println("DEcansoooooooooooooooo");
 				changeState();
 			}
 		}
 		if (timeOfAtention == 0) {
 			changeState();
+		}
+	}
+	
+	public void addOrder(Kitchen kitchen, ArrayList<Order> orderList, ArrayList<Client> clientList) {
+		for (Order order : orderList) {
+			kitchen.addOrdersToQueue(new Order(1, StateOfOrder.ON_WAY, order.getDishesLis(), null));
 		}
 	}
 

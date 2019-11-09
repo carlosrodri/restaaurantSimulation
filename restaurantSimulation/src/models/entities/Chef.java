@@ -2,7 +2,7 @@ package models.entities;
 
 import java.util.ArrayList;
 
-public class Chef extends MyThread{
+public class Chef{
 	
 	private int id;
 	private String nombre;
@@ -13,12 +13,11 @@ public class Chef extends MyThread{
 	private State state;
 	private double timeOfSimulation;
 	private double timeOfPreparation;
-	public Chef(int sleep, int id, String nombre, int hoursOfWork, int quantumBreaks, ArrayList<Hability> habilities, double error,
+	public Chef(int id, String nombre, int hoursOfWork, int quantumBreaks, ArrayList<Hability> habilities, double error,
 			State state) {
-		super(sleep);
 		this.id = id;
 		this.nombre = nombre;
-		this.hoursOfWork = hoursOfWork;
+		this.hoursOfWork = hoursOfWork*1000;
 		this.quantumBreaks = quantumBreaks;
 		this.habilities = habilities;
 		this.error = error;
@@ -62,13 +61,14 @@ public class Chef extends MyThread{
 		return "Chef [id=" + id + ", nombre=" + nombre + ", hoursOfWork=" + hoursOfWork + ", quantumBreaks="
 				+ quantumBreaks + ", habilities=" + habilities + ", error=" + error + ", state=" + state + "]";
 	}
-	@Override
 	public void executeTask() {
+		System.out.println("Chef trabajando");
 		timeOfSimulation ++;
 		timeOfPreparation --;
 		if (timeOfSimulation%2000 == 0) {
 			changeState();
 			if (timeOfSimulation == 2332 || timeOfSimulation == 4332 || timeOfSimulation == 6332) {
+				System.out.println("Descansa el chef");
 				changeState();
 			}
 		}

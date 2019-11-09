@@ -6,8 +6,10 @@ import models.entities.Atention;
 import models.entities.Client;
 import models.entities.Dish;
 import models.entities.Hability;
+import models.entities.Kitchen;
 import models.entities.Order;
 import models.entities.State;
+import models.entities.StateOfOrder;
 import models.entities.Table;
 import models.entities.Waiter;
 
@@ -28,7 +30,7 @@ public class SimulationManager {
 	 */
 	private void generate() {
 		for (int i = 0; i < 2; i++) {
-			waiters.add(new Waiter(16, i, State.FREE, 8, 0, 0, 0));
+			waiters.add(new Waiter(i, State.FREE, 8, 0, 0, 0));
 		}
 
 		for (int i = 0; i < 14; i++) {
@@ -59,15 +61,17 @@ public class SimulationManager {
 		dishes.add(new Dish("Bola de oro", Hability.POSTRE, 7400, 13.12, 4.58));
 	}
 
-	public synchronized Atention generateAtention() {
+	public Atention generateAtention(Kitchen kitchen) throws Exception {
 		ArrayList<Client> clientList = generateClientList();
 		if (getFreeWaiter() != null && getFreeTable() != null) {
 			System.out.println("Generando una nueva orden de atencion en el tiempo: ");
 			Waiter waiter = getFreeWaiter();
-			return new Atention(16, waiter, clientList, generateOrderList(), getFreeTable());
-		}else return null;
+			return new Atention(16, waiter, clientList, generateOrderList(clientList), getFreeTable(), kitchen);
+		}else {
+			System.out.println("esperandooooo disponibilidad");
+			throw new Exception("esperando andooo...");
+		}
 	}
-
 
 	private static Table getFreeTable() {
 		for (Table table : tables) {
@@ -78,19 +82,22 @@ public class SimulationManager {
 		return null;
 	}
 
-	private static Waiter getFreeWaiter() {
-		for (Waiter waiter : waiters) {
-			if (waiter.getState().equals(State.FREE)) {
-				return waiter;
-			}else System.out.println("No hay un mesero disponible todavia"); 
-				return null;
+	private static Waiter getFreeWaiter() throws Exception {
+		if (waiters.get(0).getState().equals(State.FREE)) {
+			return waiters.get(0);
+		}else if (waiters.get(1).getState().equals(State.FREE)) {
+			return waiters.get(1);
+		}else {
+			throw new Exception("Meseros no disponibles");
 		}
-		return null;
 	}
 
-	private static ArrayList<Order> generateOrderList() {
-		// TODO Auto-generated method stub
-		return null;
+	private static ArrayList<Order> generateOrderList(ArrayList<Client> list) {
+		ArrayList<Order> orderList = new ArrayList<Order>();
+		for (Client client : list) {
+			orderList.add(new Order(1, StateOfOrder.ON_WAY, client.getDishesList(), client));
+		}
+		return orderList;
 	}
 
 	/**
@@ -102,10 +109,12 @@ public class SimulationManager {
 		for (int i = 0; i < (int)(Math.random()*5) + 1; i++) {
 			clientList.add(new Client(i+"", generateDishes()));
 		}
+		for (Client client : clientList) {
+			System.out.println(client.getDishesList().size() + "  clientes han llegado");
+		}
 		return clientList;
 	}
 
-	
 	/**
 	 * Se generan los platos del pedido de cada persona de forma random
 	 * @return una lista de platos que pertenece al pedido de cada persona de la mesa
