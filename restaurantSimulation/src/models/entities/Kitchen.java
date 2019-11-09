@@ -16,7 +16,7 @@ public class Kitchen extends MyThread{
 		this.cheflist = cheflist;
 		this.orderQueue = new Queue<>();
 		this.timeOfSimulation = 0;
-		start();
+		this.start();
 	}
 
 	@Override
@@ -37,14 +37,13 @@ public class Kitchen extends MyThread{
 		if (timeOfSimulation == 8000) {
 			stopAll();
 		}
-		if (!orderQueue.isEmpty() && chefDsiponibility(null) != null) {
+		if (orderQueue.getHead() != null && chefDsiponibility(null) != null) {
 			Order orderInWay = orderQueue.dequeue().getInformation();
 			for (Dish dish : orderInWay.getDishesLis()) {
 				Chef chef = chefDsiponibility(dish);
+				chef.executeTask();
 				if (chef != null) {
 					chef.setTimeOfPreparation(dish.getTimeOfOfConsumption());
-				}else {
-					System.out.println("el chef está ocupado");
 				}
 			}
 			orderInWay.setStateOfOrder(StateOfOrder.FINISHED);
@@ -72,18 +71,21 @@ public class Kitchen extends MyThread{
 	 * @throws Exception 
 	 */
 	public Chef chefDsiponibility(Dish dish) throws Exception {
-		if (cheflist.size() == 0) {
-
-		}else {
-			if (cheflist.get(0).getState().equals(State.FREE)) {
+		System.out.println(cheflist.get(0).getState() +" xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+		if (cheflist.size() == 2) {
+			if (cheflist.get(0).getState().toString().equals(State.FREE.toString())) {
+				System.out.println("chef libre");
 				return cheflist.get(0);
-			}else if (cheflist.get(1).getState().equals(State.FREE)) {
+			}else if (cheflist.get(1).getState().toString().equals(State.FREE.toString())) {
+				System.out.println("chef libre");
 				return cheflist.get(1);
 			}else{
-				throw new Exception("No hay messeros libres, esperando...");
+				throw new Exception("No hay chefs libres, esperando...");
 			}
+		}else {
+			
 		}
-		throw new Exception("No hay messeros libres, esperando...");
+		throw new Exception("No hay chefs libres, esperando...");
 	}
 
 }

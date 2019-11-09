@@ -3,7 +3,7 @@ package models.entities;
 import java.util.ArrayList;
 
 public class Chef{
-	
+
 	private int id;
 	private String nombre;
 	private int hoursOfWork;
@@ -65,15 +65,6 @@ public class Chef{
 		System.out.println("Chef trabajando");
 		timeOfSimulation ++;
 		timeOfPreparation --;
-		if (timeOfSimulation%2000 == 0) {
-			changeState();
-			if (timeOfSimulation == 2332 || timeOfSimulation == 4332 || timeOfSimulation == 6332) {
-				System.out.println("Descansa el chef");
-				changeState();
-			}
-		}
-		if (timeOfPreparation == 0) {
-			changeState();
-		}
 	}
+
 }
