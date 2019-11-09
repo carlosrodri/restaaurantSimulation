@@ -32,7 +32,7 @@ public class Chef{
 	}
 	public void setTimeOfPreparation(double time) {
 		this.timeOfPreparation = time;
-		changeState();
+//		changeState();
 	}
 	public int getHoursOfWork() {
 		return hoursOfWork;
